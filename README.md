@@ -1,15 +1,15 @@
 # Fashionhub
 
-# Frontend 
+Frontend 
 <!-- Frontend info Here -->
 
-# Backend
+ Backend
 <!-- Backend info Here -->
 
-# Database
+ Database
 <!-- Database info Here -->
 
-# Docs
+ Docs
 This folder is for storing :
 ER Diagram
 Use Case Diagram
