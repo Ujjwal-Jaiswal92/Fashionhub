@@ -1,25 +1,12 @@
-# CakePHP 3
+# Environment variables (contains secrets)
+.env
 
-/vendor/*
-/config/app.php
+# macOS
+.DS_Store
 
-/tmp/cache/models/*
-!/tmp/cache/models/empty
-/tmp/cache/persistent/*
-!/tmp/cache/persistent/empty
-/tmp/cache/views/*
-!/tmp/cache/views/empty
-/tmp/sessions/*
-!/tmp/sessions/empty
-/tmp/tests/*
-!/tmp/tests/empty
+# IDE settings (optional)
+.vscode/
+.idea/
 
-/logs/*
-!/logs/empty
-
-# CakePHP 2
-
-/app/tmp/*
-/app/Config/core.php
-/app/Config/database.php
-/vendors/*
+# Log files
+*.log
