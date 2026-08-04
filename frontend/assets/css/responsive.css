@@ -1,0 +1,328 @@
+/* ===================================
+        RESPONSIVE DESIGN
+=================================== */
+
+@media(max-width:992px){
+
+    .navbar{
+        flex-wrap:wrap;
+        gap:20px;
+    }
+
+    .search-box{
+        width:100%;
+        order:3;
+    }
+
+    .nav-links{
+        width:100%;
+        justify-content:center;
+    }
+
+}
+
+@media(max-width:768px){
+
+    .navbar{
+        flex-direction:column;
+    }
+
+    .nav-links{
+        flex-direction:column;
+        align-items:center;
+        gap:15px;
+    }
+
+    .nav-icons{
+        margin-top:15px;
+    }
+
+    .footer-container{
+        text-align:center;
+    }
+
+    .social{
+        justify-content:center;
+    }
+
+}
+/* ===============================
+      WHY CHOOSE RESPONSIVE
+================================ */
+
+@media(max-width:992px){
+
+    .why-container{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:768px){
+
+    .why-container{
+        grid-template-columns:1fr;
+    }
+
+}
+/*==============================
+        SALE BANNER
+===============================*/
+
+@media(max-width:768px){
+
+    .sale-content h1{
+
+        font-size:45px;
+    }
+
+    .sale-content h2{
+
+        font-size:28px;
+    }
+
+}
+/*=============================
+        TESTIMONIALS
+==============================*/
+
+@media(max-width:992px){
+
+    .testimonial-container{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:768px){
+
+    .testimonial-container{
+        grid-template-columns:1fr;
+    }
+
+}
+/*==============================
+        NEWSLETTER
+===============================*/
+
+@media(max-width:768px){
+
+    .newsletter-form{
+
+        flex-direction:column;
+    }
+
+    .newsletter-form input{
+
+        width:100%;
+    }
+
+}
+/* Footer */
+
+@media(max-width:768px){
+
+    .footer{
+        text-align:center;
+    }
+
+    .social-icons{
+        justify-content:center;
+    }
+
+}
+@media(max-width:992px){
+
+.products-page{
+
+grid-template-columns:1fr;
+
+}
+
+}
+@media(max-width:992px){
+
+.product-details{
+
+grid-template-columns:1fr;
+
+}
+
+.thumbnail-images{
+
+flex-wrap:wrap;
+
+}
+
+.product-buttons{
+
+flex-direction:column;
+
+}
+
+}
+@media(max-width:992px){
+
+.cart-container{
+
+grid-template-columns:1fr;
+
+}
+
+.cart-items{
+
+overflow-x:auto;
+
+}
+
+}
+/* Checkout */
+
+@media(max-width:992px){
+
+.checkout-container{
+    grid-template-columns:1fr;
+}
+
+}
+/* Authentication */
+
+@media(max-width:992px){
+
+.auth-box{
+
+grid-template-columns:1fr;
+
+}
+
+.auth-left{
+
+display:none;
+
+}
+
+.auth-right{
+
+padding:40px 30px;
+
+}
+
+}
+/* Profile */
+
+@media(max-width:992px){
+
+.profile-container{
+
+grid-template-columns:1fr;
+
+}
+
+.profile-row{
+
+grid-template-columns:1fr;
+
+}
+
+}
+@media(max-width:768px){
+
+.orders-table{
+
+overflow-x:auto;
+
+}
+
+}
+@media(max-width:768px){
+
+.wishlist-buttons{
+
+flex-direction:column;
+
+}
+
+}
+@media(max-width:768px){
+
+.success-card{
+
+padding:30px;
+
+}
+
+.order-info{
+
+grid-template-columns:1fr;
+
+}
+
+.success-buttons{
+
+flex-direction:column;
+
+}
+
+}
+@media(max-width:992px){
+
+.about-container{
+
+grid-template-columns:1fr;
+
+}
+
+.about-features{
+
+grid-template-columns:1fr 1fr;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.about-features{
+
+grid-template-columns:1fr;
+
+}
+
+}
+/* Contact */
+
+@media(max-width:992px){
+
+.contact-container{
+
+grid-template-columns:1fr;
+
+}
+
+}
+@media(max-width:768px){
+
+.password-card{
+
+width:100%;
+
+padding:30px 20px;
+
+}
+
+}
+@media(max-width:768px){
+
+.error-content h1{
+
+font-size:100px;
+
+}
+
+.error-content h2{
+
+font-size:28px;
+
+}
+
+}
