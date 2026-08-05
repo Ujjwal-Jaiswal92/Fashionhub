@@ -39,4 +39,12 @@ class CartController
         header("Location: ../../frontend/pages/cart.php");
         exit();
     }
+    public function getCartItems()
+{
+    if (!isset($_SESSION['user_id'])) {
+        return [];
+    }
+
+    return $this->cart->getCartItems($_SESSION['user_id']);
+}
 }
