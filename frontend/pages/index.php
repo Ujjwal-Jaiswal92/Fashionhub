@@ -1,4 +1,8 @@
-<?php include("../includes/header.php"); ?>
+<?php
+require_once '../../backend/controllers/ProductController.php';
+$featuredProducts = (new ProductController())->getApprovedProducts();
+include("../includes/header.php");
+?>
 <?php include("../includes/navbar.php"); ?>
 
 <main>
@@ -100,6 +104,21 @@
     </div>
 
     <div class="product-grid">
+        <?php foreach (array_slice($featuredProducts, 0, 4) as $product): ?>
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="../../uploads/products/<?= htmlspecialchars($product['image'] ?: 'placeholder.png') ?>" alt="<?= htmlspecialchars($product['product_name']) ?>">
+                </div>
+                <div class="product-info">
+                    <span class="category"><?= htmlspecialchars($product['category_name']) ?></span>
+                    <h3><?= htmlspecialchars($product['product_name']) ?></h3>
+                    <div class="price">Rs. <?= number_format((float)$product['price'], 2) ?></div><br>
+                    <a class="cart-btn" href="product-details.php?id=<?= (int)$product['product_id'] ?>">View Details</a>
+                </div>
+            </div>
+        <?php endforeach; ?>
+        <?php if (!$featuredProducts): ?><p>No approved products are available yet.</p><?php endif; ?>
+        <?php if (false): ?>
 
         <!-- Product 1 -->
         <div class="product-card">
@@ -269,6 +288,7 @@
 </div>
 
         </div>
+        <?php endif; ?>
 
     </div>
 
@@ -312,7 +332,7 @@
 
 </section>
 <!-- ================= NEW ARRIVALS ================= -->
-
+<?php if (false): ?>
 <section class="new-arrivals">
 
     <div class="section-title">
@@ -390,6 +410,7 @@
     </div>
 
 </section>
+<?php endif; ?>
 <!-- ================= SALE BANNER ================= -->
 
 <section class="sale-banner">
@@ -614,4 +635,3 @@
 
 
 </main>
-

@@ -1,4 +1,11 @@
-<?php include("../includes/header.php"); ?>
+<?php
+session_start();
+require_once '../../backend/controllers/CartController.php';
+$checkoutItems = (new CartController())->getCartItems();
+$checkoutTotal = array_sum(array_map(fn($item) => $item['price'] * $item['quantity'], $checkoutItems));
+if (!$checkoutItems) { header('Location: products.php'); exit; }
+include("../includes/header.php");
+?>
 <?php include("../includes/navbar.php"); ?>
 
 <!-- ================= CHECKOUT ================= -->
@@ -15,7 +22,7 @@
 
             <h3>Billing Details</h3>
 
-            <form action="#" method="POST">
+            <form id="checkout-form" action="../../backend/api/orders.php?action=place" method="POST">
 
                 <div class="form-group">
                     <label>Full Name</label>
@@ -34,7 +41,7 @@
 
                 <div class="form-group">
                     <label>Address</label>
-                    <textarea rows="4" placeholder="Enter delivery address" required></textarea>
+                    <textarea name="shipping_address" rows="4" placeholder="Enter delivery address" required></textarea>
                 </div>
 
                 <div class="form-group">
@@ -47,12 +54,12 @@
 
                     <div class="payment-method">
                         <label>
-                            <input type="radio" name="payment" checked>
+                            <input type="radio" name="payment_method" value="Cash on Delivery" checked>
                             Cash on Delivery
                         </label>
 
                         <label>
-                            <input type="radio" name="payment">
+                            <input type="radio" name="payment_method" value="Khalti">
                             Khalti
                         </label>
                     </div>
@@ -68,10 +75,7 @@
 
             <h3>Order Summary</h3>
 
-            <div class="summary-row">
-                <span>Classic Shirt × 1</span>
-                <span>Rs. 2,499</span>
-            </div>
+            <?php foreach ($checkoutItems as $item): ?><div class="summary-row"><span><?= htmlspecialchars($item['product_name']) ?> × <?= (int)$item['quantity'] ?></span><span>Rs. <?= number_format($item['price'] * $item['quantity'], 2) ?></span></div><?php endforeach; ?>
 
             <div class="summary-row">
                 <span>Shipping</span>
@@ -82,10 +86,10 @@
 
             <div class="summary-row total">
                 <span>Total</span>
-                <span>Rs. 2,499</span>
+                <span>Rs. <?= number_format($checkoutTotal, 2) ?></span>
             </div>
 
-            <button class="place-order-btn">
+            <button class="place-order-btn" form="checkout-form" type="submit">
                 Place Order
             </button>
 

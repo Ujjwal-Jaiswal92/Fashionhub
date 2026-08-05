@@ -1,4 +1,10 @@
-<?php include("../includes/header.php"); ?>
+<?php
+require_once '../../backend/controllers/ProductController.php';
+$productId = (int)($_GET['id'] ?? 0);
+$product = $productId ? (new ProductController())->getProductById($productId) : false;
+if (!$product || $product['status'] !== 'Approved') { http_response_code(404); include '404.php'; exit; }
+include("../includes/header.php");
+?>
 <?php include("../includes/navbar.php"); ?>
 
 <!-- ================= PRODUCT DETAILS ================= -->
@@ -9,14 +15,11 @@
 
     <div class="product-gallery">
 
-        <img src="../assets/images/products/product1.jpg" class="main-image" alt="Classic Shirt">
+        <img src="../../uploads/products/<?= htmlspecialchars($product['image'] ?: 'placeholder.png') ?>" class="main-image" alt="<?= htmlspecialchars($product['product_name']) ?>">
 
         <div class="thumbnail-images">
 
-            <img src="../assets/images/products/product1.jpg" alt="">
-            <img src="../assets/images/products/product2.jpg" alt="">
-            <img src="../assets/images/products/product3.jpg" alt="">
-            <img src="../assets/images/products/product4.jpg" alt="">
+            <img src="../../uploads/products/<?= htmlspecialchars($product['image'] ?: 'placeholder.png') ?>" alt="<?= htmlspecialchars($product['product_name']) ?>">
 
         </div>
 
@@ -27,60 +30,38 @@
     <div class="product-info-details">
 
         <span class="product-category">
-            Men
+            <?= htmlspecialchars($product['category_name']) ?>
         </span>
 
         <h1>
-            Classic Cotton Shirt
+            <?= htmlspecialchars($product['product_name']) ?>
         </h1>
 
         <div class="rating">
-            ★★★★★ (125 Reviews)
+            Sold by <?= htmlspecialchars($product['seller_name']) ?>
         </div>
 
         <div class="product-price">
 
-            Rs. 2,499
+            Rs. <?= number_format((float)$product['price'], 2) ?>
 
         </div>
 
         <p>
 
-            Premium quality cotton shirt designed for comfort and style.
-            Perfect for casual and formal occasions.
+            <?= nl2br(htmlspecialchars($product['description'])) ?>
 
         </p>
 
-        <!-- Size -->
-
-        <h3>Select Size</h3>
-
-        <div class="sizes">
-
-            <button>S</button>
-            <button>M</button>
-            <button>L</button>
-            <button>XL</button>
-
-        </div>
-
-        <!-- Quantity -->
-
-        <h3>Quantity</h3>
-
-        <input type="number" value="1" min="1">
-
-        <div class="product-buttons">
-
-            <button class="cart-btn">
-                Add to Cart
-            </button>
-
-            <button class="buy-btn">
-                Buy Now
-            </button>
-
-        </div>
+        <p>Available stock: <?= (int)$product['stock'] ?></p>
+        <form action="../../backend/api/cart.php?action=add" method="POST">
+            <input type="hidden" name="product_id" value="<?= (int)$product['product_id'] ?>">
+            <h3>Quantity</h3>
+            <input type="number" name="quantity" value="1" min="1" max="<?= (int)$product['stock'] ?>" required>
+            <div class="product-buttons">
+                <button class="cart-btn" type="submit" <?= $product['stock'] < 1 ? 'disabled' : '' ?>>Add to Cart</button>
+            </div>
+        </form>
 
     </div>
 

@@ -1,4 +1,9 @@
-<?php include("../includes/header.php"); ?>
+<?php
+require_once '../../backend/middleware/admin.php';
+require_once '../../backend/controllers/ProductController.php';
+$adminProducts = (new ProductController())->getAllProducts();
+include("../includes/header.php");
+?>
 <link rel="stylesheet" href="../assets/css/admin.css">
 
 <div class="admin-container">
@@ -76,7 +81,21 @@
                 </thead>
 
                 <tbody>
-
+                    <?php foreach ($adminProducts as $product): ?>
+                    <tr>
+                        <td><?= (int)$product['product_id'] ?></td>
+                        <td><img src="../../uploads/products/<?= htmlspecialchars($product['image'] ?: 'placeholder.png') ?>" class="product-img"></td>
+                        <td><?= htmlspecialchars($product['product_name']) ?><br><small>Seller: <?= htmlspecialchars($product['seller_name']) ?></small></td>
+                        <td><?= htmlspecialchars($product['category_name']) ?></td>
+                        <td>Rs. <?= number_format((float)$product['price'], 2) ?></td>
+                        <td><?= (int)$product['stock'] ?></td>
+                        <td>
+                            <strong><?= htmlspecialchars($product['status']) ?></strong><br>
+                            <?php if ($product['status'] === 'Pending'): ?><a href="../../backend/api/products.php?action=approve&id=<?= (int)$product['product_id'] ?>" class="edit-btn">Approve</a><?php endif; ?>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                    <?php if (false): ?>
                     <tr>
 
                         <td>1</td>
@@ -104,6 +123,7 @@
                         </td>
 
                     </tr>
+                    <?php endif; ?>
 
                     <tr>
 

@@ -29,13 +29,14 @@
 
             <p>Join FashionHub and start shopping today.</p>
 
-            <form action="../../backend/api/auth/register.php" method="POST">
+            <form id="registerForm" action="../../backend/api/auth.php?action=register" method="POST">
 
                 <div class="input-group">
                     <label>Full Name</label>
                     <input
                         type="text"
-                        name="fullname"
+                        id="name"
+                        name="full_name"
                         placeholder="Enter your full name"
                         required>
                 </div>
@@ -44,6 +45,7 @@
                     <label>Email</label>
                     <input
                         type="email"
+                        id="email"
                         name="email"
                         placeholder="Enter your email"
                         required>
@@ -62,6 +64,7 @@
                     <label>Password</label>
                     <input
                         type="password"
+                        id="password"
                         name="password"
                         placeholder="Create password"
                         required>
@@ -71,9 +74,18 @@
                     <label>Confirm Password</label>
                     <input
                         type="password"
+                        id="confirmPassword"
                         name="confirm_password"
                         placeholder="Confirm password"
                         required>
+                </div>
+
+                <div class="input-group">
+                    <label>Account type</label>
+                    <select name="role" required>
+                        <option value="customer">Customer</option>
+                        <option value="seller">Seller</option>
+                    </select>
                 </div>
 
                 <div class="remember">
@@ -105,6 +117,8 @@
                     Login
 
                 </a>
+                <br><br>
+                <a href="../admin/login.php">Login as Admin</a>
 
             </div>
 

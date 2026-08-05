@@ -21,7 +21,8 @@
 
         </div>
 
-        <form action="../../backend/api/auth/admin-login.php" method="POST">
+        <form action="../../backend/api/auth.php?action=login" method="POST">
+            <input type="hidden" name="expected_role" value="admin">
 
             <div class="input-group">
 
@@ -54,6 +55,8 @@
             </button>
 
         </form>
+
+        <p><a href="../pages/login.php">Customer / Seller Login</a></p>
 
     </div>
 

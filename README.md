@@ -138,6 +138,18 @@ Open:
 http://localhost/FashionHub/
 ```
 
+### Initial administrator account
+
+After importing `database/fashionhub.sql`, sign in from the Admin Login page with:
+
+```text
+Name: Ujjwal Jaiswal
+Email: ujwaljaiswal29@gmail.com
+Password: Admin@123
+```
+
+The SQL file stores the password as a secure hash. Change this initial password before deploying the project outside a local development environment.
+
 ---
 
 ## 🌿 Git Branches

@@ -1,4 +1,10 @@
-<?php include("../includes/header.php"); ?>
+<?php
+session_start();
+require_once '../../backend/controllers/CartController.php';
+$cartItems = (new CartController())->getCartItems();
+$cartTotal = array_sum(array_map(fn($item) => $item['price'] * $item['quantity'], $cartItems));
+include("../includes/header.php");
+?>
 <?php include("../includes/navbar.php"); ?>
 
 <!-- ================= CART ================= -->
@@ -30,7 +36,17 @@
                 </thead>
 
                 <tbody>
-
+                    <?php foreach ($cartItems as $item): ?>
+                    <tr>
+                        <td class="product-info"><img src="../../uploads/products/<?= htmlspecialchars($item['image'] ?: 'placeholder.png') ?>"><div><h4><?= htmlspecialchars($item['product_name']) ?></h4></div></td>
+                        <td>Rs. <?= number_format((float)$item['price'], 2) ?></td>
+                        <td><?= (int)$item['quantity'] ?></td>
+                        <td>Rs. <?= number_format($item['price'] * $item['quantity'], 2) ?></td>
+                        <td><form action="../../backend/api/cart.php?action=remove" method="POST"><input type="hidden" name="cart_item_id" value="<?= (int)$item['cart_item_id'] ?>"><button class="remove-btn" type="submit"><i class="fas fa-trash"></i></button></form></td>
+                    </tr>
+                    <?php endforeach; ?>
+                    <?php if (!$cartItems): ?><tr><td colspan="5">Your cart is empty. <a href="products.php">Browse products</a></td></tr><?php endif; ?>
+                    <?php if (false): ?>
                     <tr>
 
                         <td class="product-info">
@@ -68,6 +84,7 @@
                         </td>
 
                     </tr>
+                    <?php endif; ?>
 
                 </tbody>
 
@@ -85,7 +102,7 @@
 
                 <span>Subtotal</span>
 
-                <span>Rs. 2,499</span>
+                <span>Rs. <?= number_format($cartTotal, 2) ?></span>
 
             </div>
 
@@ -103,11 +120,11 @@
 
                 <span>Total</span>
 
-                <span>Rs. 2,499</span>
+                <span>Rs. <?= number_format($cartTotal, 2) ?></span>
 
             </div>
 
-            <a href="checkout.php" class="checkout-btn">
+            <a href="<?= $cartItems ? 'checkout.php' : 'products.php' ?>" class="checkout-btn">
 
                 Proceed to Checkout
 

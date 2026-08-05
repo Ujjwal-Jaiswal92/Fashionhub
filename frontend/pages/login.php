@@ -25,7 +25,7 @@
 
             <p>Login to continue shopping at FashionHub.</p>
 
-            <form action="../../backend/api/auth/login.php" method="POST">
+            <form id="loginForm" action="../../backend/api/auth.php?action=login" method="POST">
 
                 <div class="input-group">
 
@@ -82,6 +82,9 @@
                     Register
 
                 </a>
+
+                <br><br>
+                <a href="../admin/login.php">Login as Admin</a>
 
             </div>
 

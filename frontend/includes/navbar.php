@@ -42,13 +42,13 @@
 
         <div class="nav-icons">
 
-            <a href="login.php">
+            <a href="<?= isset($_SESSION['user_id']) ? (($_SESSION['role'] ?? '') === 'seller' ? 'seller-dashboard.php' : 'profile.php') : 'login.php' ?>">
                 <i class="fa-regular fa-user"></i>
             </a>
 
-            <a href="#">
-                <i class="fa-regular fa-heart"></i>
-            </a>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <a href="../../backend/api/auth.php?action=logout" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></a>
+            <?php endif; ?>
 
             <a href="cart.php">
                 <i class="fa-solid fa-cart-shopping"></i>

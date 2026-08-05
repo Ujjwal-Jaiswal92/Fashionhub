@@ -1,4 +1,4 @@
-<?php include("../includes/header.php"); ?>
+<?php require_once '../../backend/middleware/admin.php'; include("../includes/header.php"); ?>
 <link rel="stylesheet" href="../assets/css/admin.css">
 
 <div class="admin-container">
