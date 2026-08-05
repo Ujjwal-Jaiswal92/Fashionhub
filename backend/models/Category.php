@@ -26,16 +26,16 @@ class Category
         ]);
     }
 
-    // Get All Categories
-    public function getAll()
-    {
-        $query = "SELECT * FROM {$this->table}
-                  ORDER BY category_id DESC";
+    // // Get All Categories
+    // public function getAll()
+    // {
+    //     $query = "SELECT * FROM {$this->table}
+    //               ORDER BY category_id DESC";
 
-        return $this->conn
-                    ->query($query)
-                    ->fetchAll(PDO::FETCH_ASSOC);
-    }
+    //     return $this->conn
+    //                 ->query($query)
+    //                 ->fetchAll(PDO::FETCH_ASSOC);
+    // }
 
     // Get Category By ID
     public function getById($id)
@@ -80,5 +80,18 @@ class Category
             ':id'=>$id
         ]);
     }
+    /**
+ * Get All Categories
+ */
+public function getAll()
+{
+    $query = "SELECT * FROM categories ORDER BY category_name ASC";
+
+    return $this->conn
+                ->query($query)
+                ->fetchAll(PDO::FETCH_ASSOC);
 }
+    
+}
+
 ?>

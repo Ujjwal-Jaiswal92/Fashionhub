@@ -78,5 +78,9 @@ class CategoryController
             die("Failed to delete category.");
         }
     }
+//     public function getCategories()
+// {
+//     return $this->category->getAll();
+// }
 }
 ?>
