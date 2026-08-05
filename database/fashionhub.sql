@@ -102,8 +102,8 @@ CREATE TABLE reviews(
 );
 
 -- Initial administrator account. The password is hashed; sign in with Admin@123.
-INSERT INTO users (full_name, email, password, role, status)
-VALUES ('Ujjwal Jaiswal', 'ujwaljaiswal29@gmail.com', '$2y$12$C5STitZLLjhJuvga2xDqSePcHuvCilaqBebBpDsO8mgdUA5zV.eZq', 'admin', 'Approved');
+INSERT INTO users (full_name, email, password, phone, address, role, status)
+VALUES ('Ujjwal Jaiswal', 'ujwaljaiswal29@gmail.com', '$2y$12$C5STitZLLjhJuvga2xDqSePcHuvCilaqBebBpDsO8mgdUA5zV.eZq', '9860599493', 'Kathmandu', 'admin', 'Approved');
 
 INSERT INTO categories (category_name, description) VALUES
 ('Men', 'Fashion for men'),

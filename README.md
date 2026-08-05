@@ -146,6 +146,8 @@ After importing `database/fashionhub.sql`, sign in from the Admin Login page wit
 Name: Ujjwal Jaiswal
 Email: ujwaljaiswal29@gmail.com
 Password: Admin@123
+Phone: 9860599493
+Address: Kathmandu
 ```
 
 The SQL file stores the password as a secure hash. Change this initial password before deploying the project outside a local development environment.
