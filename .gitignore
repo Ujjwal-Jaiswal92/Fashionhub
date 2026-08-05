@@ -10,3 +10,8 @@
 
 # Log files
 *.log
+
+# Temporary debug files
+test.php
+debug.php
+temp.php
