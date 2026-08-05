@@ -232,7 +232,7 @@ ul{
 
 .product-grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
     gap:30px;
 }
 
@@ -1297,7 +1297,7 @@ ul{
 
 }
 
-.product-info{
+.cart-items .product-info{
 
     display:flex;
 
@@ -1307,7 +1307,7 @@ ul{
 
 }
 
-.product-info img{
+.cart-items .product-info img{
 
     width:90px;
 
@@ -1637,6 +1637,15 @@ ul{
 
     font-weight:600;
 
+}
+
+.login-notice{
+    margin:0 0 18px !important;
+    padding:10px 14px;
+    border-radius:8px;
+    background:#fff7e6;
+    color:#92400e !important;
+    font-size:14px !important;
 }
 /*==================================
         PROFILE PAGE

@@ -110,7 +110,12 @@ class AuthController
         $_SESSION['email'] = $user['email'];
         $_SESSION['role'] = $user['role'];
 
-        if ($loginAs === 'customer') {
+        $returnPath = $_SESSION['post_login_redirect'] ?? null;
+        unset($_SESSION['post_login_redirect']);
+
+        if ($loginAs === 'customer' && $returnPath) {
+            header("Location: {$returnPath}");
+        } elseif ($loginAs === 'customer') {
             header("Location: ../../frontend/pages/index.php");
         } else switch ($user['role']) {
 

@@ -25,6 +25,10 @@
 
             <p>Login to continue shopping at FashionHub.</p>
 
+            <?php if (($_GET['notice'] ?? '') === 'cart'): ?>
+                <p class="login-notice">Please log in to add items to your cart.</p>
+            <?php endif; ?>
+
             <form id="loginForm" action="../../backend/api/auth.php?action=login" method="POST">
 
                 <div class="input-group">
