@@ -2,10 +2,10 @@
 
 class Database
 {
-    private $host = "localhost";
-    private $db_name = "fashionhub";
-    private $username = "root";
-    private $password = "";
+    private $host = "sql200.infinityfree.com";
+private $db_name = "if0_42584461_fashionhub";
+private $username = "if0_42584461";
+private $password = "6jr0Cgq0KNN1A3U";
 
     public $conn;
 
