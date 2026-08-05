@@ -96,6 +96,10 @@ class AuthController
         if (($_POST['expected_role'] ?? '') === 'admin' && $user['role'] !== 'admin') {
             die('This account is not an administrator account.');
         }
+        $loginAs = $_POST['login_as'] ?? '';
+        if ($loginAs === 'seller' && $user['role'] !== 'seller') {
+            die('This account is not registered as a seller.');
+        }
 
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
@@ -106,7 +110,9 @@ class AuthController
         $_SESSION['email'] = $user['email'];
         $_SESSION['role'] = $user['role'];
 
-        switch ($user['role']) {
+        if ($loginAs === 'customer') {
+            header("Location: ../../frontend/pages/index.php");
+        } else switch ($user['role']) {
 
             case 'admin':
                 header("Location: ../../frontend/admin/dashboard.php");

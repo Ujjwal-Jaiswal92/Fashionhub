@@ -59,6 +59,8 @@
                 </thead>
 
                 <tbody>
+                    <tr><td colspan="8">No user records are displayed here until connected to the user-management workflow.</td></tr>
+                    <?php if (false): ?>
 
                     <tr>
 
@@ -132,7 +134,7 @@
 
                     </tr>
 
-                </tbody>
+                </tbody><?php endif; ?>
 
             </table>
 

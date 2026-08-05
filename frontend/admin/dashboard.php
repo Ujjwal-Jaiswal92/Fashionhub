@@ -1,4 +1,14 @@
-<?php require_once '../../backend/middleware/admin.php'; include("../includes/header.php"); ?>
+<?php
+require_once '../../backend/middleware/admin.php';
+require_once '../../backend/config/database.php';
+$db = (new Database())->connect();
+$productCount = (int)$db->query('SELECT COUNT(*) FROM products')->fetchColumn();
+$orderCount = (int)$db->query('SELECT COUNT(*) FROM orders')->fetchColumn();
+$userCount = (int)$db->query('SELECT COUNT(*) FROM users')->fetchColumn();
+$revenue = (float)$db->query("SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE payment_status = 'Paid'")->fetchColumn();
+$recentOrders = $db->query('SELECT o.order_id, o.total_amount, o.order_status, u.full_name FROM orders o JOIN users u ON u.user_id=o.user_id ORDER BY o.created_at DESC LIMIT 5')->fetchAll(PDO::FETCH_ASSOC);
+include("../includes/header.php");
+?>
 
 <link rel="stylesheet" href="../assets/css/admin.css">
 
@@ -61,7 +71,7 @@
 
                 <h3>Total Products</h3>
 
-                <h2>120</h2>
+                <h2><?= $productCount ?></h2>
 
             </div>
 
@@ -69,7 +79,7 @@
 
                 <h3>Total Orders</h3>
 
-                <h2>86</h2>
+                <h2><?= $orderCount ?></h2>
 
             </div>
 
@@ -77,7 +87,7 @@
 
                 <h3>Total Users</h3>
 
-                <h2>245</h2>
+                <h2><?= $userCount ?></h2>
 
             </div>
 
@@ -85,7 +95,7 @@
 
                 <h3>Revenue</h3>
 
-                <h2>Rs. 2,45,000</h2>
+                <h2>Rs. <?= number_format($revenue, 2) ?></h2>
 
             </div>
 
@@ -116,7 +126,11 @@
                 </thead>
 
                 <tbody>
-
+                    <?php foreach ($recentOrders as $order): ?>
+                    <tr><td>#<?= (int)$order['order_id'] ?></td><td><?= htmlspecialchars($order['full_name']) ?></td><td>Rs. <?= number_format((float)$order['total_amount'], 2) ?></td><td><span class="pending"><?= htmlspecialchars($order['order_status']) ?></span></td></tr>
+                    <?php endforeach; ?>
+                    <?php if (!$recentOrders): ?><tr><td colspan="4">No orders yet.</td></tr><?php endif; ?>
+                    <?php if (false): ?>
                     <tr>
 
                         <td>#FH001</td>
@@ -153,7 +167,7 @@
 
                     </tr>
 
-                </tbody>
+                </tbody><?php endif; ?>
 
             </table>
 

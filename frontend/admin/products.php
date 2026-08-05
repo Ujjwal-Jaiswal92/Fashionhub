@@ -123,7 +123,6 @@ include("../includes/header.php");
                         </td>
 
                     </tr>
-                    <?php endif; ?>
 
                     <tr>
 
@@ -153,7 +152,7 @@ include("../includes/header.php");
 
                     </tr>
 
-                </tbody>
+                </tbody><?php endif; ?>
 
             </table>
 

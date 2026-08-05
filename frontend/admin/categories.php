@@ -64,6 +64,8 @@
                 </thead>
 
                 <tbody>
+                    <tr><td colspan="4">Categories are managed from database records.</td></tr>
+                    <?php if (false): ?>
 
                     <tr>
 
@@ -129,7 +131,7 @@
 
                     </tr>
 
-                </tbody>
+                </tbody><?php endif; ?>
 
             </table>
 

@@ -1,4 +1,10 @@
-<?php require_once '../../backend/middleware/admin.php'; include("../includes/header.php"); ?>
+<?php
+require_once '../../backend/middleware/admin.php';
+require_once '../../backend/config/database.php';
+$db = (new Database())->connect();
+$orders = $db->query('SELECT o.*, u.full_name FROM orders o JOIN users u ON u.user_id=o.user_id ORDER BY o.created_at DESC')->fetchAll(PDO::FETCH_ASSOC);
+include("../includes/header.php");
+?>
 <link rel="stylesheet" href="../assets/css/admin.css">
 
 <div class="admin-container">
@@ -58,7 +64,11 @@
                 </thead>
 
                 <tbody>
-
+                    <?php foreach ($orders as $order): ?>
+                    <tr><td>#<?= (int)$order['order_id'] ?></td><td><?= htmlspecialchars($order['full_name']) ?></td><td><?= htmlspecialchars($order['created_at']) ?></td><td>Rs. <?= number_format((float)$order['total_amount'], 2) ?></td><td><?= htmlspecialchars($order['payment_method']) ?></td><td><span class="status pending"><?= htmlspecialchars($order['order_status']) ?></span></td><td>—</td></tr>
+                    <?php endforeach; ?>
+                    <?php if (!$orders): ?><tr><td colspan="7">No orders yet.</td></tr><?php endif; ?>
+                    <?php if (false): ?>
                     <tr>
 
                         <td>#FH1001</td>
@@ -137,7 +147,7 @@
 
                     </tr>
 
-                </tbody>
+                </tbody><?php endif; ?>
 
             </table>
 

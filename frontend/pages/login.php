@@ -40,6 +40,14 @@
                 </div>
 
                 <div class="input-group">
+                    <label>Login as</label>
+                    <select name="login_as" required>
+                        <option value="customer">Customer</option>
+                        <option value="seller">Seller</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
 
                     <label>Password</label>
 
