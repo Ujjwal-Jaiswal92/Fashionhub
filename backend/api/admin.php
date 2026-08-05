@@ -31,5 +31,18 @@ if ($action === 'update-profile') {
     exit;
 }
 
+if ($action === 'update-user-status') {
+    $userId = (int)($_POST['user_id'] ?? 0);
+    $status = $_POST['status'] ?? '';
+    if ($userId === (int)$_SESSION['user_id']) {
+        header('Location: ../../frontend/admin/users.php?error=self'); exit;
+    }
+    $target = (new User())->getById($userId);
+    if (!$target || $target['role'] === 'admin' || !(new User())->updateStatus($userId, $status)) {
+        header('Location: ../../frontend/admin/users.php?error=update'); exit;
+    }
+    header('Location: ../../frontend/admin/users.php?success=1'); exit;
+}
+
 http_response_code(400);
 echo 'Invalid action';

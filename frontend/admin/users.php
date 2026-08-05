@@ -43,6 +43,9 @@ include("../includes/header.php");
 
         </div>
 
+        <?php if (isset($_GET['success'])): ?><p>User status updated.</p><?php endif; ?>
+        <?php if (isset($_GET['error'])): ?><p>That user status could not be updated.</p><?php endif; ?>
+
         <div class="table-container">
 
             <table>
@@ -69,7 +72,19 @@ include("../includes/header.php");
                     <tr>
                         <td><?= (int)$user['user_id'] ?></td><td>—</td><td><?= htmlspecialchars($user['full_name']) ?><br><small><?= htmlspecialchars($user['role']) ?></small></td>
                         <td><?= htmlspecialchars($user['email']) ?></td><td><?= htmlspecialchars($user['phone'] ?: '—') ?></td><td><?= htmlspecialchars($user['created_at']) ?></td>
-                        <td><span class="status active-user"><?= htmlspecialchars($user['status']) ?></span></td><td>—</td>
+                        <td><span class="status active-user"><?= htmlspecialchars($user['status']) ?></span></td>
+                        <td>
+                            <?php if ($user['role'] !== 'admin'): ?>
+                            <form action="../../backend/api/admin.php?action=update-user-status" method="POST">
+                                <input type="hidden" name="user_id" value="<?= (int)$user['user_id'] ?>">
+                                <?php if ($user['status'] !== 'Approved'): ?>
+                                    <input type="hidden" name="status" value="Approved"><button class="edit-btn" type="submit">Approve</button>
+                                <?php else: ?>
+                                    <input type="hidden" name="status" value="Blocked"><button class="delete-btn" type="submit" onclick="return confirm('Block this user?')">Block</button>
+                                <?php endif; ?>
+                            </form>
+                            <?php else: ?>—<?php endif; ?>
+                        </td>
                     </tr>
                     <?php endforeach; ?>
                     <?php if (!$users): ?><tr><td colspan="8">No users yet.</td></tr><?php endif; ?>

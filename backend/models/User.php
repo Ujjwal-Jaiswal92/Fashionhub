@@ -117,6 +117,13 @@ class User
         return $this->conn->prepare($sql)->execute($params);
     }
 
+    public function updateStatus($id, $status)
+    {
+        if (!in_array($status, ['Approved', 'Blocked'], true)) { return false; }
+        $stmt = $this->conn->prepare('UPDATE users SET status = ? WHERE user_id = ?');
+        return $stmt->execute([$status, $id]);
+    }
+
     /**
      * Get All Sellers
      */
