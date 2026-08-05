@@ -46,11 +46,7 @@ include("../includes/header.php");
 
             <h1>Products</h1>
 
-            <a href="add-product.php" class="add-btn">
-
-                + Add Product
-
-            </a>
+            <span>Seller-submitted products</span>
 
         </div>
 
@@ -152,7 +148,8 @@ include("../includes/header.php");
 
                     </tr>
 
-                </tbody><?php endif; ?>
+                    <?php endif; ?>
+                </tbody>
 
             </table>
 

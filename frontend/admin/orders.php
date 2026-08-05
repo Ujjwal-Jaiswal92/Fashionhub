@@ -147,7 +147,8 @@ include("../includes/header.php");
 
                     </tr>
 
-                </tbody><?php endif; ?>
+                    <?php endif; ?>
+                </tbody>
 
             </table>
 

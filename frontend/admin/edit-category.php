@@ -5,9 +5,9 @@ require_once "../../backend/controllers/CategoryController.php";
 
 $controller = new CategoryController();
 
-$id = $_GET['id'];
-
-$category = $controller->getById($id);
+$id = (int)($_GET['id'] ?? 0);
+$category = $id ? $controller->getById($id) : null;
+$isEditing = (bool)$category;
 
 ?>
 
@@ -17,7 +17,7 @@ $category = $controller->getById($id);
 
 <head>
 
-<title>Edit Category</title>
+<title><?= $isEditing ? 'Edit' : 'Add' ?> Category</title>
 
 <style>
 
@@ -41,23 +41,23 @@ padding:10px 20px;
 
 <body>
 
-<h2>Edit Category</h2>
+<h2><?= $isEditing ? 'Edit' : 'Add' ?> Category</h2>
 
 <form
-action="../../backend/api/categories.php?action=update"
+action="../../backend/api/categories.php?action=<?= $isEditing ? 'update' : 'create' ?>"
 method="POST"
 >
 
-<input
+<?php if ($isEditing): ?><input
 type="hidden"
 name="category_id"
 value="<?= $category['category_id']; ?>"
->
+><?php endif; ?>
 
 <input
 type="text"
 name="category_name"
-value="<?= htmlspecialchars($category['category_name']); ?>"
+value="<?= htmlspecialchars($category['category_name'] ?? ''); ?>"
 required
 >
 
@@ -65,7 +65,7 @@ required
 
 <button>
 
-Update Category
+<?= $isEditing ? 'Update' : 'Add' ?> Category
 
 </button>
 

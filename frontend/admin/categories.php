@@ -1,4 +1,9 @@
-<?php require_once '../../backend/middleware/admin.php'; include("../includes/header.php"); ?>
+<?php
+require_once '../../backend/middleware/admin.php';
+require_once '../../backend/controllers/CategoryController.php';
+$categories = (new CategoryController())->getAll();
+include("../includes/header.php");
+?>
 <link rel="stylesheet" href="../assets/css/admin.css">
 
 <div class="admin-container">
@@ -42,7 +47,7 @@
 
             <h1>Categories</h1>
 
-            <a href="#" class="add-btn">+ Add Category</a>
+            <a href="edit-category.php" class="add-btn">+ Add Category</a>
 
         </div>
 
@@ -64,7 +69,15 @@
                 </thead>
 
                 <tbody>
-                    <tr><td colspan="4">Categories are managed from database records.</td></tr>
+                    <?php foreach ($categories as $category): ?>
+                    <tr>
+                        <td><?= (int)$category['category_id'] ?></td>
+                        <td><?= htmlspecialchars($category['category_name']) ?></td>
+                        <td>—</td>
+                        <td><a href="edit-category.php?id=<?= (int)$category['category_id'] ?>" class="edit-btn">Edit</a></td>
+                    </tr>
+                    <?php endforeach; ?>
+                    <?php if (!$categories): ?><tr><td colspan="4">No categories yet.</td></tr><?php endif; ?>
                     <?php if (false): ?>
 
                     <tr>
@@ -131,7 +144,8 @@
 
                     </tr>
 
-                </tbody><?php endif; ?>
+                    <?php endif; ?>
+                </tbody>
 
             </table>
 
