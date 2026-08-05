@@ -102,6 +102,21 @@ class User
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function updateProfile($id, $data)
+    {
+        $sql = 'UPDATE users SET full_name = :full_name, email = :email, phone = :phone, address = :address';
+        $params = [
+            ':full_name' => $data['full_name'], ':email' => $data['email'],
+            ':phone' => $data['phone'], ':address' => $data['address'], ':id' => $id,
+        ];
+        if (!empty($data['password'])) {
+            $sql .= ', password = :password';
+            $params[':password'] = password_hash($data['password'], PASSWORD_DEFAULT);
+        }
+        $sql .= ' WHERE user_id = :id';
+        return $this->conn->prepare($sql)->execute($params);
+    }
+
     /**
      * Get All Sellers
      */

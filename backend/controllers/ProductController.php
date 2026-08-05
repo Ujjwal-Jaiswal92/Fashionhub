@@ -70,9 +70,9 @@ class ProductController
     | View Approved Products (Customer)
     |--------------------------------------------------------------------------
     */
-    public function getApprovedProducts()
+    public function getApprovedProducts($filters = [])
 {
-    return $this->product->getApprovedProducts();
+    return $this->product->getApprovedProducts($filters);
 }
     /*
     |--------------------------------------------------------------------------

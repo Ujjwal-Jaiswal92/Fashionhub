@@ -264,8 +264,35 @@ class Product
     /**
  * Get All Approved Products
  */
-public function getApprovedProducts()
+public function getApprovedProducts($filters = [])
 {
+    $conditions = ["p.status = 'Approved'"];
+    $params = [];
+
+    $categories = $filters['categories'] ?? [];
+    if (!is_array($categories)) { $categories = [$categories]; }
+    $categories = array_values(array_filter(array_map('strtolower', $categories)));
+    if ($categories) {
+        $placeholders = [];
+        foreach ($categories as $index => $category) {
+            $key = ':category' . $index;
+            $placeholders[] = $key;
+            $params[$key] = $category;
+        }
+        $conditions[] = 'LOWER(c.category_name) IN (' . implode(',', $placeholders) . ')';
+    }
+    if (($filters['price'] ?? '') === '0-1000') { $conditions[] = 'p.price <= 1000'; }
+    if (($filters['price'] ?? '') === '1000-3000') { $conditions[] = 'p.price BETWEEN 1000 AND 3000'; }
+    if (($filters['price'] ?? '') === '3000-plus') { $conditions[] = 'p.price > 3000'; }
+    if (!empty($filters['search'])) {
+        $conditions[] = '(p.product_name LIKE :search OR p.description LIKE :search)';
+        $params[':search'] = '%' . trim($filters['search']) . '%';
+    }
+    $order = match ($filters['sort'] ?? '') {
+        'price_asc' => 'p.price ASC',
+        'price_desc' => 'p.price DESC',
+        default => 'p.created_at DESC',
+    };
     $query = "SELECT
                 p.*,
                 c.category_name,
@@ -275,12 +302,12 @@ public function getApprovedProducts()
                     ON p.category_id = c.category_id
               INNER JOIN users u
                     ON p.seller_id = u.user_id
-              WHERE p.status='Approved'
-              ORDER BY p.created_at DESC";
+              WHERE " . implode(' AND ', $conditions) . "
+              ORDER BY {$order}";
 
-    return $this->conn
-                ->query($query)
-                ->fetchAll(PDO::FETCH_ASSOC);
+    $stmt = $this->conn->prepare($query);
+    $stmt->execute($params);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 public function getById($id)
 {

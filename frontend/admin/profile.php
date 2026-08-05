@@ -1,4 +1,9 @@
-<?php include("../includes/header.php"); ?>
+<?php
+require_once '../../backend/middleware/admin.php';
+require_once '../../backend/models/User.php';
+$adminUser = (new User())->getById($_SESSION['user_id']);
+include("../includes/header.php");
+?>
 <link rel="stylesheet" href="../assets/css/admin.css">
 
 <div class="admin-container">
@@ -65,13 +70,14 @@
 
             <div class="profile-form">
 
-                <form>
+                <?php if (isset($_GET['success'])): ?><p>Profile updated.</p><?php endif; ?>
+                <form action="../../backend/api/admin.php?action=update-profile" method="POST">
 
                     <div class="form-group">
 
                         <label>Full Name</label>
 
-                        <input type="text" value="Administrator">
+                        <input type="text" name="full_name" value="<?= htmlspecialchars($adminUser['full_name']) ?>" required>
 
                     </div>
 
@@ -79,7 +85,7 @@
 
                         <label>Email Address</label>
 
-                        <input type="email" value="admin@fashionhub.com">
+                        <input type="email" name="email" value="<?= htmlspecialchars($adminUser['email']) ?>" required>
 
                     </div>
 
@@ -87,7 +93,15 @@
 
                         <label>Phone Number</label>
 
-                        <input type="text" value="+977 98XXXXXXXX">
+                        <input type="text" name="phone" value="<?= htmlspecialchars($adminUser['phone'] ?? '') ?>">
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Address</label>
+
+                        <input type="text" name="address" value="<?= htmlspecialchars($adminUser['address'] ?? '') ?>">
 
                     </div>
 
@@ -95,7 +109,7 @@
 
                         <label>New Password</label>
 
-                        <input type="password" placeholder="Leave blank to keep current password">
+                        <input type="password" name="new_password" placeholder="Leave blank to keep current password">
 
                     </div>
 
@@ -103,11 +117,11 @@
 
                         <label>Confirm Password</label>
 
-                        <input type="password" placeholder="Confirm new password">
+                        <input type="password" name="confirm_password" placeholder="Confirm new password">
 
                     </div>
 
-                    <button class="save-btn">
+                <button class="save-btn" type="submit">
 
                         Update Profile
 

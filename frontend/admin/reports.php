@@ -1,4 +1,14 @@
-<?php include("../includes/header.php"); ?>
+<?php
+require_once '../../backend/middleware/admin.php';
+require_once '../../backend/config/database.php';
+$db = (new Database())->connect();
+$reportRevenue = (float)$db->query("SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE payment_status = 'Paid'")->fetchColumn();
+$reportOrders = (int)$db->query('SELECT COUNT(*) FROM orders')->fetchColumn();
+$reportCustomers = (int)$db->query("SELECT COUNT(*) FROM users WHERE role IN ('customer', 'seller')")->fetchColumn();
+$reportProductsSold = (int)$db->query('SELECT COALESCE(SUM(quantity), 0) FROM order_items')->fetchColumn();
+$bestSellers = $db->query('SELECT p.product_name, c.category_name, SUM(oi.quantity) AS sold, SUM(oi.quantity * oi.price) AS revenue FROM order_items oi JOIN products p ON p.product_id = oi.product_id JOIN categories c ON c.category_id = p.category_id GROUP BY p.product_id, p.product_name, c.category_name ORDER BY sold DESC LIMIT 5')->fetchAll(PDO::FETCH_ASSOC);
+include("../includes/header.php");
+?>
 <link rel="stylesheet" href="../assets/css/admin.css">
 
 <div class="admin-container">
@@ -46,7 +56,7 @@
 
                 <h3>Total Revenue</h3>
 
-                <h2>Rs. 5,75,000</h2>
+                <h2>Rs. <?= number_format($reportRevenue, 2) ?></h2>
 
             </div>
 
@@ -54,7 +64,7 @@
 
                 <h3>Total Orders</h3>
 
-                <h2>542</h2>
+                <h2><?= $reportOrders ?></h2>
 
             </div>
 
@@ -62,7 +72,7 @@
 
                 <h3>Total Customers</h3>
 
-                <h2>310</h2>
+                <h2><?= $reportCustomers ?></h2>
 
             </div>
 
@@ -70,7 +80,7 @@
 
                 <h3>Products Sold</h3>
 
-                <h2>874</h2>
+                <h2><?= $reportProductsSold ?></h2>
 
             </div>
 
@@ -98,7 +108,11 @@
                 </thead>
 
                 <tbody>
-
+                    <?php foreach ($bestSellers as $item): ?>
+                    <tr><td><?= htmlspecialchars($item['product_name']) ?></td><td><?= htmlspecialchars($item['category_name']) ?></td><td><?= (int)$item['sold'] ?></td><td>Rs. <?= number_format((float)$item['revenue'], 2) ?></td></tr>
+                    <?php endforeach; ?>
+                    <?php if (!$bestSellers): ?><tr><td colspan="4">No completed sales yet.</td></tr><?php endif; ?>
+                    <?php if (false): ?>
                     <tr>
 
                         <td>Classic Shirt</td>
@@ -126,6 +140,7 @@
 
                     </tr>
 
+                    <?php endif; ?>
                 </tbody>
 
             </table>

@@ -1,6 +1,12 @@
 <?php
 require_once '../../backend/controllers/ProductController.php';
-$products = (new ProductController())->getApprovedProducts();
+$filters = [
+    'categories' => $_GET['categories'] ?? ($_GET['category'] ?? []),
+    'price' => $_GET['price'] ?? '',
+    'sort' => $_GET['sort'] ?? '',
+    'search' => $_GET['search'] ?? '',
+];
+$products = (new ProductController())->getApprovedProducts($filters);
 include("../includes/header.php");
 ?>
 <?php include("../includes/navbar.php"); ?>
@@ -21,29 +27,32 @@ include("../includes/header.php");
 
     <!-- Sidebar -->
 
-    <aside class="filter-sidebar">
+    <form class="filter-sidebar" method="GET">
 
         <h3>Categories</h3>
 
-        <label><input type="checkbox"> Men</label>
+        <label><input type="checkbox" name="categories[]" value="Men" <?= in_array('men', array_map('strtolower', (array)$filters['categories']), true) ? 'checked' : '' ?>> Men</label>
 
-        <label><input type="checkbox"> Women</label>
+        <label><input type="checkbox" name="categories[]" value="Women" <?= in_array('women', array_map('strtolower', (array)$filters['categories']), true) ? 'checked' : '' ?>> Women</label>
 
-        <label><input type="checkbox"> Kids</label>
+        <label><input type="checkbox" name="categories[]" value="Kids" <?= in_array('kids', array_map('strtolower', (array)$filters['categories']), true) ? 'checked' : '' ?>> Kids</label>
 
-        <label><input type="checkbox"> Sale</label>
+        <label><input type="checkbox" name="categories[]" value="Sale" <?= in_array('sale', array_map('strtolower', (array)$filters['categories']), true) ? 'checked' : '' ?>> Sale</label>
 
         <hr>
 
         <h3>Price</h3>
 
-        <label><input type="radio" name="price"> Rs.0 - Rs.1000</label>
+        <label><input type="radio" name="price" value="0-1000" <?= $filters['price'] === '0-1000' ? 'checked' : '' ?>> Rs.0 - Rs.1000</label>
 
-        <label><input type="radio" name="price"> Rs.1000 - Rs.3000</label>
+        <label><input type="radio" name="price" value="1000-3000" <?= $filters['price'] === '1000-3000' ? 'checked' : '' ?>> Rs.1000 - Rs.3000</label>
 
-        <label><input type="radio" name="price"> Rs.3000+</label>
+        <label><input type="radio" name="price" value="3000-plus" <?= $filters['price'] === '3000-plus' ? 'checked' : '' ?>> Rs.3000+</label>
 
-    </aside>
+        <button class="cart-btn" type="submit">Apply Filters</button>
+        <a href="products.php">Clear Filters</a>
+
+    </form>
 
     <!-- Products -->
 
@@ -53,17 +62,17 @@ include("../includes/header.php");
 
             <p>Showing <?= count($products) ?> Products</p>
 
-            <select>
+            <form method="GET"><input type="hidden" name="category" value="<?= htmlspecialchars(is_array($filters['categories']) ? '' : $filters['categories']) ?>"><input type="hidden" name="price" value="<?= htmlspecialchars($filters['price']) ?>"><input type="hidden" name="search" value="<?= htmlspecialchars($filters['search']) ?>"><select name="sort" onchange="this.form.submit()">
 
-                <option>Sort By</option>
+                <option value="">Sort By</option>
 
-                <option>Newest</option>
+                <option value="newest" <?= $filters['sort'] === 'newest' ? 'selected' : '' ?>>Newest</option>
 
-                <option>Price: Low to High</option>
+                <option value="price_asc" <?= $filters['sort'] === 'price_asc' ? 'selected' : '' ?>>Price: Low to High</option>
 
-                <option>Price: High to Low</option>
+                <option value="price_desc" <?= $filters['sort'] === 'price_desc' ? 'selected' : '' ?>>Price: High to Low</option>
 
-            </select>
+            </select></form>
 
         </div>
 

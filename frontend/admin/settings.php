@@ -1,4 +1,10 @@
-<?php include("../includes/header.php"); ?>
+<?php
+require_once '../../backend/middleware/admin.php';
+require_once '../../backend/config/database.php';
+$db = (new Database())->connect();
+$settings = $db->query('SELECT setting_key, setting_value FROM site_settings')->fetchAll(PDO::FETCH_KEY_PAIR);
+include("../includes/header.php");
+?>
 <link rel="stylesheet" href="../assets/css/admin.css">
 
 <div class="admin-container">
@@ -51,13 +57,14 @@
 
         <div class="form-container">
 
-            <form>
+            <?php if (isset($_GET['success'])): ?><p>Settings saved.</p><?php endif; ?>
+            <form action="../../backend/api/admin.php?action=save-settings" method="POST">
 
                 <div class="form-group">
 
                     <label>Website Name</label>
 
-                    <input type="text" value="FashionHub">
+                    <input type="text" name="website_name" value="<?= htmlspecialchars($settings['website_name'] ?? 'FashionHub') ?>" required>
 
                 </div>
 
@@ -65,7 +72,7 @@
 
                     <label>Support Email</label>
 
-                    <input type="email" value="support@fashionhub.com">
+                    <input type="email" name="support_email" value="<?= htmlspecialchars($settings['support_email'] ?? '') ?>" required>
 
                 </div>
 
@@ -73,7 +80,7 @@
 
                     <label>Contact Number</label>
 
-                    <input type="text" value="+977 98XXXXXXXX">
+                    <input type="text" name="contact_number" value="<?= htmlspecialchars($settings['contact_number'] ?? '') ?>">
 
                 </div>
 
@@ -81,7 +88,7 @@
 
                     <label>Store Address</label>
 
-                    <textarea rows="4">NCIT, Balkumari, Lalitpur, Nepal</textarea>
+                    <textarea name="store_address" rows="4"><?= htmlspecialchars($settings['store_address'] ?? '') ?></textarea>
 
                 </div>
 
@@ -89,19 +96,19 @@
 
                     <label>Currency</label>
 
-                    <select>
+                    <select name="currency">
 
-                        <option selected>Nepalese Rupee (NPR)</option>
+                        <option value="NPR" <?= ($settings['currency'] ?? 'NPR') === 'NPR' ? 'selected' : '' ?>>Nepalese Rupee (NPR)</option>
 
-                        <option>Indian Rupee (INR)</option>
+                        <option value="INR" <?= ($settings['currency'] ?? '') === 'INR' ? 'selected' : '' ?>>Indian Rupee (INR)</option>
 
-                        <option>US Dollar (USD)</option>
+                        <option value="USD" <?= ($settings['currency'] ?? '') === 'USD' ? 'selected' : '' ?>>US Dollar (USD)</option>
 
                     </select>
 
                 </div>
 
-                <button class="save-btn">
+                <button class="save-btn" type="submit">
 
                     Save Settings
 

@@ -13,12 +13,12 @@
 
         <?php $isSeller = isset($_SESSION['user_id']) && ($_SESSION['role'] ?? '') === 'seller'; ?>
         <?php if (!$isSeller): ?>
-        <div class="search-box">
-            <input type="text" placeholder="Search Products...">
+        <form class="search-box" action="products.php" method="GET">
+            <input type="search" name="search" placeholder="Search Products..." value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
             <button>
                 <i class="fa-solid fa-magnifying-glass"></i>
             </button>
-        </div>
+        </form>
         <?php endif; ?>
 
         <!-- Navigation -->
@@ -32,13 +32,13 @@
 
             <li><a href="index.php">Home</a></li>
 
-            <li><a href="products.php">Men</a></li>
+            <li><a href="products.php?category=Men">Men</a></li>
 
-            <li><a href="products.php">Women</a></li>
+            <li><a href="products.php?category=Women">Women</a></li>
 
-            <li><a href="products.php">Kids</a></li>
+            <li><a href="products.php?category=Kids">Kids</a></li>
 
-            <li><a href="#">Sale</a></li>
+            <li><a href="products.php?category=Sale">Sale</a></li>
 
             <li><a href="contact.php">Contact</a></li>
         <?php endif; ?>
