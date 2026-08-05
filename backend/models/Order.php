@@ -101,4 +101,22 @@ class Order
         $stmt = $this->conn->prepare("INSERT INTO payments (order_id, amount, payment_method, payment_status) VALUES (?, ?, ?, 'Pending')");
         return $stmt->execute([$orderId, $amount, $method]);
     }
+
+    public function setPaymentReference($orderId, $reference)
+    {
+        return $this->conn->prepare('UPDATE payments SET transaction_id = ? WHERE order_id = ?')->execute([$reference, $orderId]);
+    }
+
+    public function getByPaymentReference($reference)
+    {
+        $stmt = $this->conn->prepare('SELECT o.*, p.payment_id FROM orders o JOIN payments p ON p.order_id = o.order_id WHERE p.transaction_id = ? LIMIT 1');
+        $stmt->execute([$reference]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function confirmKhaltiPayment($orderId, $paymentId, $transactionId)
+    {
+        $this->conn->prepare("UPDATE orders SET payment_status = 'Paid', order_status = 'Processing' WHERE order_id = ?")->execute([$orderId]);
+        return $this->conn->prepare("UPDATE payments SET transaction_id = ?, payment_status = 'Completed', paid_at = NOW() WHERE payment_id = ?")->execute([$transactionId, $paymentId]);
+    }
 }

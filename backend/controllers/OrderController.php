@@ -74,8 +74,47 @@ class OrderController
         // Clear cart
         $this->order->clearCart($cart_id);
 
+        if ($payment_method === 'Khalti') {
+            $configFile = __DIR__ . '/../config/khalti.php';
+            if (!is_file($configFile)) { header('Location: ../../frontend/pages/checkout.php?error=khalti'); exit(); }
+            $config = require $configFile;
+            if (empty($config['secret_key']) || $config['secret_key'] === 'YOUR_KHALTI_SECRET_KEY') { header('Location: ../../frontend/pages/checkout.php?error=khalti'); exit(); }
+            $payload = [
+                'return_url' => ($config['website_url'] ?? 'http://localhost/FashionHub') . '/backend/api/orders.php?action=khalti-return',
+                'website_url' => $config['website_url'] ?? 'http://localhost/FashionHub',
+                'amount' => (int)round($total * 100),
+                'purchase_order_id' => 'FH-' . $order_id,
+                'purchase_order_name' => 'FashionHub Order #' . $order_id,
+            ];
+            $curl = curl_init(rtrim($config['base_url'], '/') . '/epayment/initiate/');
+            curl_setopt_array($curl, [CURLOPT_RETURNTRANSFER => true, CURLOPT_POST => true, CURLOPT_POSTFIELDS => json_encode($payload), CURLOPT_HTTPHEADER => ['Authorization: Key ' . $config['secret_key'], 'Content-Type: application/json']]);
+            $response = json_decode(curl_exec($curl), true);
+            curl_close($curl);
+            if (empty($response['payment_url']) || empty($response['pidx'])) { header('Location: ../../frontend/pages/checkout.php?error=khalti'); exit(); }
+            $this->order->setPaymentReference($order_id, $response['pidx']);
+            header('Location: ' . $response['payment_url']); exit();
+        }
+
         header("Location: ../../frontend/pages/order-success.php");
         exit();
+    }
+
+    public function khaltiReturn()
+    {
+        $pidx = $_GET['pidx'] ?? '';
+        $configFile = __DIR__ . '/../config/khalti.php';
+        if (!$pidx || !is_file($configFile)) { header('Location: ../../frontend/pages/checkout.php?error=khalti'); exit(); }
+        $config = require $configFile;
+        $order = $this->order->getByPaymentReference($pidx);
+        if (!$order) { header('Location: ../../frontend/pages/checkout.php?error=khalti'); exit(); }
+        $curl = curl_init(rtrim($config['base_url'], '/') . '/epayment/lookup/');
+        curl_setopt_array($curl, [CURLOPT_RETURNTRANSFER => true, CURLOPT_POST => true, CURLOPT_POSTFIELDS => json_encode(['pidx' => $pidx]), CURLOPT_HTTPHEADER => ['Authorization: Key ' . $config['secret_key'], 'Content-Type: application/json']]);
+        $result = json_decode(curl_exec($curl), true); curl_close($curl);
+        if (($result['status'] ?? '') === 'Completed' && (int)($result['total_amount'] ?? 0) === (int)round($order['total_amount'] * 100)) {
+            $this->order->confirmKhaltiPayment($order['order_id'], $order['payment_id'], $result['transaction_id'] ?? $pidx);
+            header('Location: ../../frontend/pages/order-success.php'); exit();
+        }
+        header('Location: ../../frontend/pages/checkout.php?error=khalti'); exit();
     }
 
     public function getMyOrders()

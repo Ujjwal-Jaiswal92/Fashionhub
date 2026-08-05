@@ -12,6 +12,8 @@ include("../includes/header.php");
 
 <section class="checkout-page">
 
+    <?php if (($_GET['error'] ?? '') === 'khalti'): ?><p class="login-notice">Khalti payment could not be started or verified. Please try again.</p><?php endif; ?>
+
     <h2>Checkout</h2>
 
     <div class="checkout-container">

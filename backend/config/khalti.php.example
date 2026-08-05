@@ -1,0 +1,7 @@
+<?php
+return [
+    // Use your secret key from https://test-admin.khalti.com for sandbox testing.
+    'secret_key' => 'YOUR_KHALTI_SECRET_KEY',
+    'base_url' => 'https://dev.khalti.com/api/v2',
+    'website_url' => 'http://localhost/FashionHub',
+];

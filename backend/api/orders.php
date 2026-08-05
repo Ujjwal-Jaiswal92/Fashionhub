@@ -19,6 +19,9 @@ switch($action)
     case 'update-status':
         $order->updateOrderStatus();
         break;
+    case 'khalti-return':
+        $order->khaltiReturn();
+        break;
 
     default:
         echo "Invalid Action";
