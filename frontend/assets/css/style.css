@@ -985,6 +985,65 @@ ul{
     margin-bottom:15px;
 }
 
+/* ==========================
+      SELLER DASHBOARD
+========================== */
+.seller-dashboard{
+    min-height:calc(100vh - 290px);
+    padding:72px 8%;
+    background:#f8f9fb;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.seller-welcome{
+    width:min(760px, 100%);
+    text-align:center;
+    background:#fff;
+    padding:60px 48px;
+    border-radius:22px;
+    box-shadow:0 14px 35px rgba(17,24,39,.10);
+}
+
+.seller-eyebrow{
+    display:inline-block;
+    color:#F59E0B;
+    font-weight:600;
+    letter-spacing:1px;
+    margin-bottom:12px;
+}
+
+.seller-welcome h1{
+    color:#111827;
+    font-size:42px;
+    line-height:1.2;
+    margin-bottom:16px;
+}
+
+.seller-welcome p{
+    color:#6b7280;
+    line-height:1.8;
+    margin:0 auto 30px;
+    max-width:600px;
+}
+
+.seller-actions{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:18px;
+    flex-wrap:wrap;
+}
+
+.seller-shop-link{
+    color:#111827;
+    font-weight:600;
+    padding:13px 20px;
+}
+
+.seller-shop-link:hover{ color:#F59E0B; }
+
 .products-page{
 
     padding:70px 8%;
