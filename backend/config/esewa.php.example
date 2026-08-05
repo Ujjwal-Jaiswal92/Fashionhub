@@ -1,0 +1,12 @@
+<?php
+
+// eSewa ePay V2 sandbox configuration. Copy this file to esewa.php.
+// These official sandbox values are for local testing only; request your own
+// merchant product code and secret key from eSewa before using production.
+return [
+    'product_code' => 'EPAYTEST',
+    'secret_key' => '8gBm/:&EnhH.1/q',
+    'form_url' => 'https://rc-epay.esewa.com.np/api/epay/main/v2/form',
+    'status_url' => 'https://rc.esewa.com.np/api/epay/transaction/status/',
+    'website_url' => 'http://localhost/FashionHub',
+];

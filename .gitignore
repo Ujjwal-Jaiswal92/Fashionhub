@@ -1,6 +1,7 @@
 # Environment variables (contains secrets)
 .env
 backend/config/khalti.php
+backend/config/esewa.php
 
 # macOS
 .DS_Store

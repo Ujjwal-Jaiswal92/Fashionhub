@@ -61,7 +61,7 @@ CREATE TABLE orders(
  order_id INT AUTO_INCREMENT PRIMARY KEY,
  user_id INT NOT NULL,
  total_amount DECIMAL(10,2) NOT NULL,
- payment_method ENUM('Cash on Delivery','Khalti') NOT NULL,
+    payment_method ENUM('Cash on Delivery','eSewa') NOT NULL,
  payment_status ENUM('Pending','Paid','Failed') DEFAULT 'Pending',
  order_status ENUM('Pending','Processing','Shipped','Delivered','Cancelled') DEFAULT 'Pending',
  shipping_address TEXT,
@@ -84,7 +84,7 @@ CREATE TABLE payments(
  order_id INT NOT NULL,
  transaction_id VARCHAR(100),
  amount DECIMAL(10,2) NOT NULL,
- payment_method ENUM('Cash on Delivery','Khalti') NOT NULL,
+    payment_method ENUM('Cash on Delivery','eSewa') NOT NULL,
  payment_status ENUM('Pending','Completed','Failed','Refunded') DEFAULT 'Pending',
  paid_at TIMESTAMP NULL,
  FOREIGN KEY(order_id) REFERENCES orders(order_id) ON DELETE CASCADE
@@ -110,3 +110,41 @@ INSERT INTO categories (category_name, description) VALUES
 ('Women', 'Fashion for women'),
 ('Kids', 'Fashion for kids'),
 ('Accessories', 'Fashion accessories');
+
+USE fashionhub;
+
+CREATE TABLE site_settings (
+    setting_key VARCHAR(100) PRIMARY KEY,
+    setting_value TEXT NOT NULL,
+    updated_by INT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_settings_admin
+        FOREIGN KEY (updated_by)
+        REFERENCES users(user_id)
+        ON DELETE SET NULL
+);
+
+INSERT INTO site_settings (setting_key, setting_value) VALUES
+('website_name', 'FashionHub'),
+('support_email', 'support@fashionhub.com'),
+('contact_number', '9860599493'),
+('store_address', 'Kathmandu, Nepal'),
+('currency', 'NPR');
+
+CREATE TABLE report_snapshots (
+    report_id INT AUTO_INCREMENT PRIMARY KEY,
+    report_type ENUM('daily', 'monthly', 'custom') NOT NULL,
+    period_start DATE NOT NULL,
+    period_end DATE NOT NULL,
+    total_revenue DECIMAL(12,2) NOT NULL DEFAULT 0,
+    total_orders INT NOT NULL DEFAULT 0,
+    total_customers INT NOT NULL DEFAULT 0,
+    products_sold INT NOT NULL DEFAULT 0,
+    generated_by INT NULL,
+    generated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_report_admin
+        FOREIGN KEY (generated_by)
+        REFERENCES users(user_id)
+        ON DELETE SET NULL
+);

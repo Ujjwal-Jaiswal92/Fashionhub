@@ -114,7 +114,7 @@ class Order
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function confirmKhaltiPayment($orderId, $paymentId, $transactionId)
+    public function confirmEsewaPayment($orderId, $paymentId, $transactionId)
     {
         $this->conn->prepare("UPDATE orders SET payment_status = 'Paid', order_status = 'Processing' WHERE order_id = ?")->execute([$orderId]);
         return $this->conn->prepare("UPDATE payments SET transaction_id = ?, payment_status = 'Completed', paid_at = NOW() WHERE payment_id = ?")->execute([$transactionId, $paymentId]);

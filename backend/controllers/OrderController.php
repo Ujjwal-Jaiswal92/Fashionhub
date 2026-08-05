@@ -47,7 +47,7 @@ class OrderController
 
         $payment_method = $_POST['payment_method'] ?? 'Cash on Delivery';
         $shipping_address = trim($_POST['shipping_address'] ?? '');
-        if (!in_array($payment_method, ['Cash on Delivery', 'Khalti'], true) || $shipping_address === '') {
+        if (!in_array($payment_method, ['Cash on Delivery', 'eSewa'], true) || $shipping_address === '') {
             die('Please provide a delivery address and valid payment method.');
         }
 
@@ -74,47 +74,74 @@ class OrderController
         // Clear cart
         $this->order->clearCart($cart_id);
 
-        if ($payment_method === 'Khalti') {
-            $configFile = __DIR__ . '/../config/khalti.php';
-            if (!is_file($configFile)) { header('Location: ../../frontend/pages/checkout.php?error=khalti'); exit(); }
+        if ($payment_method === 'eSewa') {
+            $configFile = __DIR__ . '/../config/esewa.php';
+            if (!is_file($configFile)) { header('Location: ../../frontend/pages/checkout.php?error=esewa'); exit(); }
             $config = require $configFile;
-            if (empty($config['secret_key']) || $config['secret_key'] === 'YOUR_KHALTI_SECRET_KEY') { header('Location: ../../frontend/pages/checkout.php?error=khalti'); exit(); }
-            $payload = [
-                'return_url' => ($config['website_url'] ?? 'http://localhost/FashionHub') . '/backend/api/orders.php?action=khalti-return',
-                'website_url' => $config['website_url'] ?? 'http://localhost/FashionHub',
-                'amount' => (int)round($total * 100),
-                'purchase_order_id' => 'FH-' . $order_id,
-                'purchase_order_name' => 'FashionHub Order #' . $order_id,
+            if (empty($config['product_code']) || empty($config['secret_key'])) { header('Location: ../../frontend/pages/checkout.php?error=esewa'); exit(); }
+
+            $transactionUuid = 'FH-' . $order_id . '-' . bin2hex(random_bytes(6));
+            $this->order->setPaymentReference($order_id, $transactionUuid);
+            $amount = number_format((float)$total, 2, '.', '');
+            $signedFields = 'total_amount,transaction_uuid,product_code';
+            $signatureMessage = "total_amount={$amount},transaction_uuid={$transactionUuid},product_code={$config['product_code']}";
+            $signature = base64_encode(hash_hmac('sha256', $signatureMessage, $config['secret_key'], true));
+            $websiteUrl = rtrim($config['website_url'] ?? 'http://localhost/FashionHub', '/');
+            $fields = [
+                'amount' => $amount,
+                'tax_amount' => '0',
+                'total_amount' => $amount,
+                'transaction_uuid' => $transactionUuid,
+                'product_code' => $config['product_code'],
+                'product_service_charge' => '0',
+                'product_delivery_charge' => '0',
+                'success_url' => $websiteUrl . '/backend/api/orders.php?action=esewa-return',
+                'failure_url' => $websiteUrl . '/backend/api/orders.php?action=esewa-return&failed=1',
+                'signed_field_names' => $signedFields,
+                'signature' => $signature,
             ];
-            $curl = curl_init(rtrim($config['base_url'], '/') . '/epayment/initiate/');
-            curl_setopt_array($curl, [CURLOPT_RETURNTRANSFER => true, CURLOPT_POST => true, CURLOPT_POSTFIELDS => json_encode($payload), CURLOPT_HTTPHEADER => ['Authorization: Key ' . $config['secret_key'], 'Content-Type: application/json']]);
-            $response = json_decode(curl_exec($curl), true);
-            curl_close($curl);
-            if (empty($response['payment_url']) || empty($response['pidx'])) { header('Location: ../../frontend/pages/checkout.php?error=khalti'); exit(); }
-            $this->order->setPaymentReference($order_id, $response['pidx']);
-            header('Location: ' . $response['payment_url']); exit();
+            $this->renderEsewaForm($config['form_url'], $fields);
         }
 
         header("Location: ../../frontend/pages/order-success.php");
         exit();
     }
 
-    public function khaltiReturn()
+    public function esewaReturn()
     {
-        $pidx = $_GET['pidx'] ?? '';
-        $configFile = __DIR__ . '/../config/khalti.php';
-        if (!$pidx || !is_file($configFile)) { header('Location: ../../frontend/pages/checkout.php?error=khalti'); exit(); }
+        $configFile = __DIR__ . '/../config/esewa.php';
+        if (isset($_GET['failed']) || !is_file($configFile)) { header('Location: ../../frontend/pages/checkout.php?error=esewa'); exit(); }
         $config = require $configFile;
-        $order = $this->order->getByPaymentReference($pidx);
-        if (!$order) { header('Location: ../../frontend/pages/checkout.php?error=khalti'); exit(); }
-        $curl = curl_init(rtrim($config['base_url'], '/') . '/epayment/lookup/');
-        curl_setopt_array($curl, [CURLOPT_RETURNTRANSFER => true, CURLOPT_POST => true, CURLOPT_POSTFIELDS => json_encode(['pidx' => $pidx]), CURLOPT_HTTPHEADER => ['Authorization: Key ' . $config['secret_key'], 'Content-Type: application/json']]);
+        $encodedData = $_GET['data'] ?? '';
+        $data = json_decode(base64_decode($encodedData, true) ?: '', true);
+        $transactionUuid = $data['transaction_uuid'] ?? '';
+        $order = $transactionUuid ? $this->order->getByPaymentReference($transactionUuid) : false;
+        if (!$order || ($data['status'] ?? '') !== 'COMPLETE') { header('Location: ../../frontend/pages/checkout.php?error=esewa'); exit(); }
+
+        $query = http_build_query([
+            'product_code' => $config['product_code'],
+            'total_amount' => number_format((float)$order['total_amount'], 2, '.', ''),
+            'transaction_uuid' => $transactionUuid,
+        ]);
+        $curl = curl_init(rtrim($config['status_url'], '?') . '?' . $query);
+        curl_setopt_array($curl, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 15]);
         $result = json_decode(curl_exec($curl), true); curl_close($curl);
-        if (($result['status'] ?? '') === 'Completed' && (int)($result['total_amount'] ?? 0) === (int)round($order['total_amount'] * 100)) {
-            $this->order->confirmKhaltiPayment($order['order_id'], $order['payment_id'], $result['transaction_id'] ?? $pidx);
+        if (($result['status'] ?? '') === 'COMPLETE' && (float)($result['total_amount'] ?? -1) === (float)$order['total_amount']) {
+            $this->order->confirmEsewaPayment($order['order_id'], $order['payment_id'], $data['transaction_code'] ?? $transactionUuid);
             header('Location: ../../frontend/pages/order-success.php'); exit();
         }
-        header('Location: ../../frontend/pages/checkout.php?error=khalti'); exit();
+        header('Location: ../../frontend/pages/checkout.php?error=esewa'); exit();
+    }
+
+    private function renderEsewaForm($action, array $fields)
+    {
+        header('Content-Type: text/html; charset=UTF-8');
+        echo '<!doctype html><html><head><meta charset="utf-8"><title>Redirecting to eSewa</title>';
+        echo '<style>body{font-family:Arial,sans-serif;background:#f5f7fb;display:grid;place-items:center;min-height:100vh;margin:0}.box{background:#fff;padding:36px;border-radius:14px;box-shadow:0 8px 24px #0002;text-align:center}button{background:#60bb46;color:#fff;border:0;border-radius:7px;padding:12px 20px;font-size:16px}</style>';
+        echo '</head><body><div class="box"><h2>Redirecting to eSewa</h2><p>Please wait while we open the secure sandbox payment page.</p><form id="esewa-form" method="POST" action="' . htmlspecialchars($action, ENT_QUOTES, 'UTF-8') . '">';
+        foreach ($fields as $name => $value) { echo '<input type="hidden" name="' . htmlspecialchars($name, ENT_QUOTES, 'UTF-8') . '" value="' . htmlspecialchars($value, ENT_QUOTES, 'UTF-8') . '">'; }
+        echo '<button type="submit">Continue to eSewa</button></form><script>document.getElementById("esewa-form").submit();</script></div></body></html>';
+        exit();
     }
 
     public function getMyOrders()

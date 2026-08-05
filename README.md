@@ -118,6 +118,16 @@ cd FashionHub
 fashionhub
 ```
 
+### eSewa sandbox payment
+
+FashionHub supports **Cash on Delivery** and **eSewa Sandbox**. Before testing eSewa:
+
+1. Start MySQL and run [`database/migrations/replace_khalti_with_esewa.sql`](database/migrations/replace_khalti_with_esewa.sql) once in phpMyAdmin.
+2. The local sandbox file is already available at `backend/config/esewa.php`. It is ignored by Git so merchant credentials are never committed.
+3. During checkout choose **eSewa (Sandbox)**. FashionHub creates a pending order, redirects to eSewa's test payment page, and only changes the order to **Paid / Processing** after eSewa's server status check returns `COMPLETE`.
+
+The included `EPAYTEST` product code and sandbox secret are for development only. A real eSewa merchant account is required before accepting live payments.
+
 3. Import:
 
 ```text

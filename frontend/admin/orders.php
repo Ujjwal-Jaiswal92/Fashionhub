@@ -127,7 +127,7 @@ include("../includes/header.php");
                         <td>Sita KC</td>
                         <td>02 Aug 2026</td>
                         <td>Rs.1,899</td>
-                        <td>Khalti</td>
+                        <td>eSewa</td>
 
                         <td>
 

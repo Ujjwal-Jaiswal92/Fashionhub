@@ -12,7 +12,7 @@ include("../includes/header.php");
 
 <section class="checkout-page">
 
-    <?php if (($_GET['error'] ?? '') === 'khalti'): ?><p class="login-notice">Khalti payment could not be started or verified. Please try again.</p><?php endif; ?>
+    <?php if (($_GET['error'] ?? '') === 'esewa'): ?><p class="login-notice">eSewa payment could not be completed or verified. No payment was marked as successful.</p><?php endif; ?>
 
     <h2>Checkout</h2>
 
@@ -61,8 +61,8 @@ include("../includes/header.php");
                         </label>
 
                         <label>
-                            <input type="radio" name="payment_method" value="Khalti">
-                            Khalti
+                            <input type="radio" name="payment_method" value="eSewa">
+                            eSewa (Sandbox)
                         </label>
                     </div>
                 </div>

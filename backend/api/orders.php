@@ -19,8 +19,8 @@ switch($action)
     case 'update-status':
         $order->updateOrderStatus();
         break;
-    case 'khalti-return':
-        $order->khaltiReturn();
+    case 'esewa-return':
+        $order->esewaReturn();
         break;
 
     default:
