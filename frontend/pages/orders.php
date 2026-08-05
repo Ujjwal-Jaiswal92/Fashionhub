@@ -1,4 +1,9 @@
-<?php include("../includes/header.php"); ?>
+<?php
+session_start();
+require_once '../../backend/controllers/OrderController.php';
+$myOrders = (new OrderController())->getMyOrders();
+include("../includes/header.php");
+?>
 <?php include("../includes/navbar.php"); ?>
 
 <section class="orders-page">
@@ -26,14 +31,18 @@
 
                     <th>Status</th>
 
-                    <th>Action</th>
+                    <th>Payment</th>
 
                 </tr>
 
             </thead>
 
             <tbody>
-
+                <?php foreach ($myOrders as $order): ?>
+                <tr><td>#<?= (int)$order['order_id'] ?></td><td><?= htmlspecialchars(date('d M Y', strtotime($order['created_at']))) ?></td><td><?= htmlspecialchars($order['items'] ?: '—') ?></td><td>Rs. <?= number_format((float)$order['total_amount'], 2) ?></td><td><span class="status pending"><?= htmlspecialchars($order['order_status']) ?></span></td><td><?= htmlspecialchars($order['payment_status']) ?></td></tr>
+                <?php endforeach; ?>
+                <?php if (!$myOrders): ?><tr><td colspan="6">You have not placed an order yet.</td></tr><?php endif; ?>
+                <?php if (false): ?>
                 <tr>
 
                     <td>#FH1001</td>
@@ -112,6 +121,7 @@
 
                 </tr>
 
+                <?php endif; ?>
             </tbody>
 
         </table>

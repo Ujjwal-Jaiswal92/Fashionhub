@@ -30,11 +30,10 @@ class User
         PASSWORD_DEFAULT
     );
 
-    // Sellers must be able to sign in and submit their first product.
-    // Products—not seller accounts—go through the admin approval gate.
-    $status = 'Approved';
+    // Email verification activates both customer and seller accounts.
+    $status = 'Pending';
 
-    return $stmt->execute([
+    $stmt->execute([
         ':full_name' => $data['full_name'],
         ':email' => $data['email'],
         ':password' => $hashedPassword,
@@ -43,6 +42,7 @@ class User
         ':role' => $data['role'],
         ':status' => $status
     ]);
+    return $this->conn->lastInsertId();
 }
 
     /**

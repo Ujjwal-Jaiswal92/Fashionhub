@@ -22,6 +22,16 @@ switch ($action) {
         $auth->logout();
         break;
 
+    case 'verify-email':
+        $auth->verifyEmail();
+        break;
+    case 'request-reset':
+        $auth->requestPasswordReset();
+        break;
+    case 'reset-password':
+        $auth->resetPassword();
+        break;
+
     default:
         echo "Invalid Action";
 }

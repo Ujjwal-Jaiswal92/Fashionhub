@@ -1,0 +1,3 @@
+<?php include '../includes/header.php'; ?>
+<section class="auth-container"><div class="auth-box"><div class="auth-right"><h2>Choose New Password</h2><?php if (isset($_GET['error'])): ?><p class="login-notice">Passwords must match and contain at least 6 characters.</p><?php endif; ?><form action="../../backend/api/auth.php?action=reset-password" method="POST"><input type="hidden" name="token" value="<?= htmlspecialchars($_GET['token'] ?? '') ?>"><div class="input-group"><label>New Password</label><input type="password" name="password" required></div><div class="input-group"><label>Confirm Password</label><input type="password" name="confirm_password" required></div><button type="submit">Update Password</button></form></div></div></section>
+</body></html>

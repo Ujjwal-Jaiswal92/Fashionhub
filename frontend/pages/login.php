@@ -28,6 +28,11 @@
             <?php if (($_GET['notice'] ?? '') === 'cart'): ?>
                 <p class="login-notice">Please log in to add items to your cart.</p>
             <?php endif; ?>
+            <?php if (($_GET['notice'] ?? '') === 'registered'): ?><p class="login-notice">Registration successful. You can now log in.</p><?php endif; ?>
+            <?php if (($_GET['notice'] ?? '') === 'verified'): ?><p class="login-notice">Your email has been verified. You can now log in.</p><?php endif; ?>
+            <?php if (($_GET['notice'] ?? '') === 'reset'): ?><p class="login-notice">If that email exists, a password-reset link has been sent.</p><?php endif; ?>
+            <?php if (($_GET['notice'] ?? '') === 'password-reset'): ?><p class="login-notice">Password updated. You can now log in.</p><?php endif; ?>
+            <?php if (isset($_GET['error'])): ?><p class="login-notice">Login failed. Check your credentials and selected account type.</p><?php endif; ?>
 
             <form id="loginForm" action="../../backend/api/auth.php?action=login" method="POST">
 
@@ -67,13 +72,13 @@
 
                     <label>
 
-                        <input type="checkbox">
+                        <input type="checkbox" name="remember_me" value="1">
 
                         Remember Me
 
                     </label>
 
-                    <a href="#">Forgot Password?</a>
+                    <a href="forgot-password.php">Forgot Password?</a>
 
                 </div>
 

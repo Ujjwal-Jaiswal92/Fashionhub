@@ -16,6 +16,9 @@ switch($action)
     case 'place':
         $order->placeOrder();
         break;
+    case 'update-status':
+        $order->updateOrderStatus();
+        break;
 
     default:
         echo "Invalid Action";

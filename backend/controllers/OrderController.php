@@ -53,6 +53,7 @@ class OrderController
 
         // Create order. The schema uses order_status and payment_status, not a status column.
         $order_id = $this->order->createOrder($user_id, $total, $payment_method, $shipping_address);
+        $this->order->createPaymentRecord($order_id, $total, $payment_method);
 
         // Add order items
         foreach ($items as $item) {
@@ -74,6 +75,20 @@ class OrderController
         $this->order->clearCart($cart_id);
 
         header("Location: ../../frontend/pages/order-success.php");
+        exit();
+    }
+
+    public function getMyOrders()
+    {
+        if (!isset($_SESSION['user_id'])) { return []; }
+        return $this->order->getByUser($_SESSION['user_id']);
+    }
+
+    public function updateOrderStatus()
+    {
+        if (($_SESSION['role'] ?? '') !== 'admin') { header('Location: ../../frontend/admin/login.php'); exit(); }
+        $success = $this->order->updateStatus((int)($_POST['order_id'] ?? 0), $_POST['order_status'] ?? '', $_POST['payment_status'] ?? '');
+        header('Location: ../../frontend/admin/orders.php?' . ($success ? 'success=1' : 'error=1'));
         exit();
     }
 }

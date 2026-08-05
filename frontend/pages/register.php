@@ -28,6 +28,7 @@
             <h2>Create Account</h2>
 
             <p>Join FashionHub and start shopping today.</p>
+            <?php if (isset($_GET['error'])): ?><p class="login-notice">This email is already registered or the form could not be saved.</p><?php endif; ?>
 
             <form id="registerForm" action="../../backend/api/auth.php?action=register" method="POST">
 

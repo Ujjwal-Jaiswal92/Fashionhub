@@ -79,4 +79,26 @@ class Order
 
         return $stmt->execute([$cart_id]);
     }
+
+    public function getByUser($userId)
+    {
+        $stmt = $this->conn->prepare('SELECT o.*, GROUP_CONCAT(CONCAT(p.product_name, " × ", oi.quantity) SEPARATOR ", ") AS items FROM orders o LEFT JOIN order_items oi ON oi.order_id = o.order_id LEFT JOIN products p ON p.product_id = oi.product_id WHERE o.user_id = ? GROUP BY o.order_id ORDER BY o.created_at DESC');
+        $stmt->execute([$userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function updateStatus($orderId, $orderStatus, $paymentStatus)
+    {
+        $allowedOrders = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
+        $allowedPayments = ['Pending', 'Paid', 'Failed'];
+        if (!in_array($orderStatus, $allowedOrders, true) || !in_array($paymentStatus, $allowedPayments, true)) { return false; }
+        $stmt = $this->conn->prepare('UPDATE orders SET order_status = ?, payment_status = ? WHERE order_id = ?');
+        return $stmt->execute([$orderStatus, $paymentStatus, $orderId]);
+    }
+
+    public function createPaymentRecord($orderId, $amount, $method)
+    {
+        $stmt = $this->conn->prepare("INSERT INTO payments (order_id, amount, payment_method, payment_status) VALUES (?, ?, ?, 'Pending')");
+        return $stmt->execute([$orderId, $amount, $method]);
+    }
 }
