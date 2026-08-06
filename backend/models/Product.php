@@ -271,7 +271,18 @@ public function getApprovedProducts($filters = [])
 
     $categories = $filters['categories'] ?? [];
     if (!is_array($categories)) { $categories = [$categories]; }
-    $categories = array_values(array_filter(array_map('strtolower', $categories)));
+    $categoryAliases = [
+        'men' => 'men', 'male' => 'men', 'mens' => 'men', "men's" => 'men',
+        'female' => 'female', 'women' => 'female', 'womens' => 'female', "women's" => 'female',
+        'kid' => 'kid', 'kids' => 'kid', "kid's" => 'kid',
+    ];
+    $categories = array_values(array_filter(array_map(
+        static function ($category) use ($categoryAliases) {
+            $category = strtolower(trim((string)$category));
+            return $categoryAliases[$category] ?? $category;
+        },
+        $categories
+    )));
     if ($categories) {
         $placeholders = [];
         foreach ($categories as $index => $category) {
@@ -279,7 +290,7 @@ public function getApprovedProducts($filters = [])
             $placeholders[] = $key;
             $params[$key] = $category;
         }
-        $conditions[] = 'LOWER(c.category_name) IN (' . implode(',', $placeholders) . ')';
+        $conditions[] = 'LOWER(TRIM(c.category_name)) IN (' . implode(',', $placeholders) . ')';
     }
     if (($filters['price'] ?? '') === '0-1000') { $conditions[] = 'p.price <= 1000'; }
     if (($filters['price'] ?? '') === '1000-3000') { $conditions[] = 'p.price BETWEEN 1000 AND 3000'; }

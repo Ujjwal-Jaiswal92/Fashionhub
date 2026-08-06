@@ -30,7 +30,7 @@
             <p>
 
                 FashionHub is an online clothing store that offers stylish,
-                affordable, and premium-quality fashion for Men, Women, and Kids.
+                affordable, and premium-quality fashion for Men, Female, and Kid.
 
             </p>
 

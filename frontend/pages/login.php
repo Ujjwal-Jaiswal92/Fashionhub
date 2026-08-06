@@ -29,6 +29,7 @@
                 <p class="login-notice">Please log in to add items to your cart.</p>
             <?php endif; ?>
             <?php if (($_GET['notice'] ?? '') === 'registered'): ?><p class="login-notice">Registration successful. You can now log in.</p><?php endif; ?>
+            <?php if (($_GET['notice'] ?? '') === 'seller-pending'): ?><p class="login-notice">Seller registration received. An administrator must approve your seller account before you can log in.</p><?php endif; ?>
             <?php if (($_GET['notice'] ?? '') === 'verified'): ?><p class="login-notice">Your email has been verified. You can now log in.</p><?php endif; ?>
             <?php if (($_GET['notice'] ?? '') === 'reset'): ?><p class="login-notice">If that email exists, a password-reset link has been sent.</p><?php endif; ?>
             <?php if (($_GET['notice'] ?? '') === 'password-reset'): ?><p class="login-notice">Password updated. You can now log in.</p><?php endif; ?>

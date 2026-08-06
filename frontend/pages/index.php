@@ -18,7 +18,7 @@ include("../includes/header.php");
             <h1>Discover Your <span>Perfect Style</span></h1>
 
             <p>
-                Explore premium fashion for Men, Women & Kids.
+                Explore premium fashion for Men, Female & Kid.
                 Elevate your wardrobe with our latest collections.
             </p>
 
@@ -66,18 +66,18 @@ include("../includes/header.php");
         </div>
 
         <div class="category-card">
-            <img src="../assets/images/categories/women.jpg" alt="Women">
+            <img src="../assets/images/categories/women.jpg" alt="Female">
             <div class="category-overlay">
-                <h3>Women</h3>
-                <a href="products.php?category=women">Shop Now</a>
+                <h3>Female</h3>
+                <a href="products.php?category=female">Shop Now</a>
             </div>
         </div>
 
         <div class="category-card">
-            <img src="../assets/images/categories/kids.jpg" alt="Kids">
+            <img src="../assets/images/categories/kids.jpg" alt="Kid">
             <div class="category-overlay">
-                <h3>Kids</h3>
-                <a href="products.php?category=kids">Shop Now</a>
+                <h3>Kid</h3>
+                <a href="products.php?category=kid">Shop Now</a>
             </div>
         </div>
 

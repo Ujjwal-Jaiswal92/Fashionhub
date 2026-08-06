@@ -34,9 +34,9 @@
 
             <li><a href="products.php?category=Men">Men</a></li>
 
-            <li><a href="products.php?category=Women">Women</a></li>
+            <li><a href="products.php?category=Female">Female</a></li>
 
-            <li><a href="products.php?category=Kids">Kids</a></li>
+            <li><a href="products.php?category=Kid">Kid</a></li>
 
             <li><a href="products.php?category=Sale">Sale</a></li>
 

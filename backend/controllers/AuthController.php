@@ -43,6 +43,10 @@ class AuthController
             die("Invalid email address.");
         }
 
+        if (!in_array($role, ['customer', 'seller'], true)) {
+            die('Invalid account type.');
+        }
+
         if ($password !== $confirm_password) {
             die("Passwords do not match.");
         }
@@ -65,12 +69,12 @@ class AuthController
 
         $userId = $this->user->register($data);
         if ($userId) {
-            $token = bin2hex(random_bytes(32));
-            $db = (new Database())->connect();
-            $db->prepare('INSERT INTO email_verifications (user_id, token_hash, expires_at) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 24 HOUR))')->execute([$userId, hash('sha256', $token)]);
-            $link = 'http://localhost/FashionHub/backend/api/auth.php?action=verify-email&token=' . $token;
-            @mail($email, 'Verify your FashionHub account', "Open this link to verify your email: {$link}");
-            header('Location: ../../frontend/pages/login.php?notice=registered'); exit();
+            if ($role === 'seller') {
+                header('Location: ../../frontend/pages/login.php?notice=seller-pending');
+            } else {
+                header('Location: ../../frontend/pages/login.php?notice=registered');
+            }
+            exit();
         }
         header('Location: ../../frontend/pages/register.php?error=registration'); exit();
     }
@@ -79,13 +83,18 @@ class AuthController
     {
         $token = $_GET['token'] ?? '';
         $db = (new Database())->connect();
-        $stmt = $db->prepare('SELECT user_id FROM email_verifications WHERE token_hash = ? AND verified_at IS NULL AND expires_at > NOW() LIMIT 1');
+        $stmt = $db->prepare('SELECT u.user_id, u.role FROM email_verifications ev JOIN users u ON u.user_id = ev.user_id WHERE ev.token_hash = ? AND ev.verified_at IS NULL AND ev.expires_at > NOW() LIMIT 1');
         $stmt->execute([hash('sha256', $token)]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!$row) { header('Location: ../../frontend/pages/login.php?error=verification'); exit(); }
         $db->prepare('UPDATE email_verifications SET verified_at = NOW() WHERE token_hash = ?')->execute([hash('sha256', $token)]);
-        $db->prepare("UPDATE users SET status = 'Approved' WHERE user_id = ?")->execute([$row['user_id']]);
-        header('Location: ../../frontend/pages/login.php?notice=verified');
+        // Verification must never bypass the separate seller approval process.
+        if ($row['role'] === 'customer') {
+            $db->prepare("UPDATE users SET status = 'Approved' WHERE user_id = ?")->execute([$row['user_id']]);
+            header('Location: ../../frontend/pages/login.php?notice=verified');
+        } else {
+            header('Location: ../../frontend/pages/login.php?notice=seller-pending');
+        }
         exit();
     }
 

@@ -80,7 +80,7 @@ include("../includes/header.php");
                                 <?php if ($user['status'] !== 'Approved'): ?>
                                     <input type="hidden" name="status" value="Approved"><button class="edit-btn" type="submit">Approve</button>
                                 <?php else: ?>
-                                    <input type="hidden" name="status" value="Blocked"><button class="delete-btn" type="submit" onclick="return confirm('Block this user?')">Block</button>
+                                    <input type="hidden" name="status" value="Blocked"><button class="delete-btn" type="submit">Delete</button>
                                 <?php endif; ?>
                             </form>
                             <?php else: ?>—<?php endif; ?>

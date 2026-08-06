@@ -30,8 +30,8 @@ class User
         PASSWORD_DEFAULT
     );
 
-    // Email verification activates both customer and seller accounts.
-    $status = 'Pending';
+    // Customers can shop immediately. Sellers require administrator approval.
+    $status = $data['role'] === 'seller' ? 'Pending' : 'Approved';
 
     $stmt->execute([
         ':full_name' => $data['full_name'],

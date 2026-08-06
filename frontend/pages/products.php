@@ -6,6 +6,15 @@ $filters = [
     'sort' => $_GET['sort'] ?? '',
     'search' => $_GET['search'] ?? '',
 ];
+$selectedCategories = array_map(static function ($category) {
+    $category = strtolower(trim((string)$category));
+    return match ($category) {
+        'women', 'womens', "women's" => 'female',
+        'kids', "kid's" => 'kid',
+        'male', 'mens', "men's" => 'men',
+        default => $category,
+    };
+}, (array)$filters['categories']);
 $products = (new ProductController())->getApprovedProducts($filters);
 include("../includes/header.php");
 ?>
@@ -17,7 +26,7 @@ include("../includes/header.php");
 
     <h1>Our Collection</h1>
 
-    <p>Explore the latest fashion for Men, Women and Kids.</p>
+    <p>Explore the latest fashion for Men, Female and Kid.</p>
 
 </section>
 
@@ -31,13 +40,13 @@ include("../includes/header.php");
 
         <h3>Categories</h3>
 
-        <label><input type="checkbox" name="categories[]" value="Men" <?= in_array('men', array_map('strtolower', (array)$filters['categories']), true) ? 'checked' : '' ?>> Men</label>
+        <label><input type="checkbox" name="categories[]" value="Men" <?= in_array('men', $selectedCategories, true) ? 'checked' : '' ?>> Men</label>
 
-        <label><input type="checkbox" name="categories[]" value="Women" <?= in_array('women', array_map('strtolower', (array)$filters['categories']), true) ? 'checked' : '' ?>> Women</label>
+        <label><input type="checkbox" name="categories[]" value="Female" <?= in_array('female', $selectedCategories, true) ? 'checked' : '' ?>> Female</label>
 
-        <label><input type="checkbox" name="categories[]" value="Kids" <?= in_array('kids', array_map('strtolower', (array)$filters['categories']), true) ? 'checked' : '' ?>> Kids</label>
+        <label><input type="checkbox" name="categories[]" value="Kid" <?= in_array('kid', $selectedCategories, true) ? 'checked' : '' ?>> Kid</label>
 
-        <label><input type="checkbox" name="categories[]" value="Sale" <?= in_array('sale', array_map('strtolower', (array)$filters['categories']), true) ? 'checked' : '' ?>> Sale</label>
+        <label><input type="checkbox" name="categories[]" value="Sale" <?= in_array('sale', $selectedCategories, true) ? 'checked' : '' ?>> Sale</label>
 
         <hr>
 

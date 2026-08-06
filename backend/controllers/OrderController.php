@@ -95,8 +95,10 @@ class OrderController
                 'product_code' => $config['product_code'],
                 'product_service_charge' => '0',
                 'product_delivery_charge' => '0',
-                'success_url' => $websiteUrl . '/backend/api/orders.php?action=esewa-return',
-                'failure_url' => $websiteUrl . '/backend/api/orders.php?action=esewa-return&failed=1',
+                // eSewa appends ?data=... to the success URL, so this must be
+                // a dedicated endpoint without an existing query string.
+                'success_url' => $websiteUrl . '/backend/api/esewa-return.php',
+                'failure_url' => $websiteUrl . '/backend/api/esewa-return.php?failed=1',
                 'signed_field_names' => $signedFields,
                 'signature' => $signature,
             ];

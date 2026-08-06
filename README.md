@@ -128,6 +128,12 @@ FashionHub supports **Cash on Delivery** and **eSewa Sandbox**. Before testing e
 
 The included `EPAYTEST` product code and sandbox secret are for development only. A real eSewa merchant account is required before accepting live payments.
 
+### Account approval rules
+
+- **Customers** are approved automatically and can log in immediately after registration.
+- **Sellers** are created as `Pending` and must be approved in the Admin Panel → Users before they can log in.
+- After updating this project, run [`database/migrations/approve_existing_customers.sql`](database/migrations/approve_existing_customers.sql) once to approve any existing pending customer accounts.
+
 3. Import:
 
 ```text
